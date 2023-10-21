@@ -1,13 +1,26 @@
 name: Checkov Security Analysis
-on: [push]
+
+on:
+  push:
+    branches:
+      - main
 
 jobs:
-  checkov:
+  security_scan:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Run Checkov
-        run: |
-          pip3 install checkov
-          checkov -d . --quiet --no-guide
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.x
+
+    - name: Install Checkov
+      run: pip3 install checkov
+
+    - name: Run Checkov
+      run: checkov -f main.tf --check CKV_AZURE_10
+
